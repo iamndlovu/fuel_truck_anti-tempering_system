@@ -4,11 +4,12 @@
   "description": "",
   "main": "./fuel_truck_anti-Tempering_system_back/index.js",
   "scripts": {
-    "client-install": "npm install --prefix Dashboard/fuel_truck_anti-Tempering_system_front",
-    "server-install": "npm install --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
-    "dev-server": "npm run dev --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
-    "server": "npm start --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
-    "client": "npm start --prefix Dashboard/fuel_truck_anti-Tempering_system_front",
+    "client-install": "npm install --prefix Dashboard/fuel_truck_anti-tempering_system_front",
+    "server-install": "npm install --prefix Dashboard/fuel_truck_anti-tempering_system_back",
+    "install-all": "concurrently \"npm install\" \"npm:client-install\" \"npm:server-install\"",
+    "dev-server": "npm run dev --prefix Dashboard/fuel_truck_anti-tempering_system_back",
+    "server": "npm start --prefix Dashboard/fuel_truck_anti-tempering_system_back",
+    "client": "npm start --prefix Dashboard/fuel_truck_anti-tempering_system_front",
     "dev": "concurrently \"npm:dev-server\" \"npm:client\"",
     "start": "concurrently \"npm:server\" \"npm:client\""
   },

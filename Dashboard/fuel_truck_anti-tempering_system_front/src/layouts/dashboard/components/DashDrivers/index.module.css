@@ -23,3 +23,26 @@
 .container .content .listItem:first-child {
   margin-top: 1rem;
 }
+
+.container .content .listItem .driverDetails {
+  width: 100%;
+  height: 10rem;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.driverDetails > h6 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.driverDetails > h6:nth-child(1) {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.driverDetails > h6:nth-child(2) {
+  margin: 0.6rem 0;
+}
