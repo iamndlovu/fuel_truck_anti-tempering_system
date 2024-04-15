@@ -1,0 +1,28 @@
+{
+  "name": "fuel_truck_anti-tempering_system",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./fuel_truck_anti-Tempering_system_back/index.js",
+  "scripts": {
+    "client-install": "npm install --prefix Dashboard/fuel_truck_anti-Tempering_system_front",
+    "server-install": "npm install --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
+    "dev-server": "npm run dev --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
+    "server": "npm start --prefix Dashboard/fuel_truck_anti-Tempering_system_back",
+    "client": "npm start --prefix Dashboard/fuel_truck_anti-Tempering_system_front",
+    "dev": "concurrently \"npm:dev-server\" \"npm:client\"",
+    "start": "concurrently \"npm:server\" \"npm:client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamndlovu/fuel_truck_anti-tempering_system.git"
+  },
+  "author": "Pardon Ndlovu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamndlovu/fuel_truck_anti-tempering_system/issues"
+  },
+  "homepage": "https://github.com/iamndlovu/fuel_truck_anti-tempering_system#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,25 @@
+.container {
+  padding: 1rem;
+  background-color: aquamarine;
+  margin-bottom: 24px;
+  opacity: 1;
+  background: transparent;
+}
+
+.container .content .listItem {
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  background-color: #fff;
+  word-wrap: break-word;
+  background-clip: border-box;
+  border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.75rem;
+  box-shadow: 0rem 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 40px;
+  max-height: 10rem;
+  display: flex;
+}
+
+.container .content .listItem:first-child {
+  margin-top: 1rem;
+}
