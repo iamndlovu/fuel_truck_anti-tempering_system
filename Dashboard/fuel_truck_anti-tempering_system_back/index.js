@@ -1,14 +1,14 @@
-var express = require("express");
-var app = express();
-var mongoose = require("mongoose");
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
 const body_parser = require("body-parser");
 const cors = require("cors");
 
-var user = require("./routes/users");
-var truck = require("./routes/trucks");
-var job = require("./routes/jobs");
-var driver = require("./routes/drivers");
-var notification = require("./routes/notifications");
+const user = require("./routes/users");
+const truck = require("./routes/trucks");
+const job = require("./routes/jobs");
+const driver = require("./routes/drivers");
+const notification = require("./routes/notifications");
 
 const corsOption = {
   origin: ["http://localhost:3000"],
@@ -19,7 +19,7 @@ app.use(cors());
 
 app.use(body_parser.json());
 
-var db_url = "mongodb://0.0.0.0:27017/jubDeliveries";
+const db_url = "mongodb://0.0.0.0:27017/ftats";
 
 mongoose.set("strictQuery", true);
 mongoose.connect(db_url);

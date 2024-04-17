@@ -11,8 +11,8 @@ const TruckSchema = mongoose.Schema({
   gps: {
     type: Object,
     default: {
-      longitude: 0,
-      latitude: 0,
+      longitude: 0.000000000,
+      latitude: 0.0000000000,
     },
   },
   setWeight: { type: Number, default: 0.0 },
