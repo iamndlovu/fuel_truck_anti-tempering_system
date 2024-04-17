@@ -81,8 +81,20 @@ export default function OutlinedCard() {
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
+    
+    const fetchTruckData = async() => {
+      try {
+        const res = await axios.get(url);
+        const fetchedTruckData = await res.data.truck;
+        isMounted && setTruckData(fetchedTruckData);
+      } catch(err) {
+        console.log(`Component \'ManageTruck.js\' failed to fetch truck data with the following error:\n${err}`);
+      }
+    };
+    fetchTruckData();
+    const fetchTruckDataPeriodically = setInterval(() => fetchTruckData(),5500);
 
-    axios
+    /*axios
       .get(url)
       .then((response) => {
         console.log('no error');
@@ -95,13 +107,14 @@ export default function OutlinedCard() {
       .catch((err) => {
         console.log('error');
         console.log(err);
-      });
+      });*/
     return () => {
+      clearInterval(fetchTruckDataPeriodically);
       isMounted = false;
       controller.abort(); //cancel any pending requests when the component unmounts
     };
   }, []);
-
+/*
   const mqttDisconnect = () => {
     if (client) {
       client.end(() => {
@@ -145,7 +158,7 @@ export default function OutlinedCard() {
       mqttDisconnect();
     };
   }, [client]);
-
+*/
   let { level, valve, pressure, weight, gps, setWeight } = truckData;
   if (!gps)
     gps = {
@@ -280,10 +293,10 @@ export default function OutlinedCard() {
                 location
               </Typography>
               <Typography variant='h5' component='div'>
-                Latitude:{latitude}
+                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Latitude&nbsp;:&nbsp;&nbsp;{latitude}</span>
               </Typography>
               <Typography variant='h5' component='div'>
-                Longitude:{longitude}
+                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Longitude:&nbsp;&nbsp;{longitude}</span> 
               </Typography>
             </CardContent>
             <CardActions>
@@ -303,10 +316,10 @@ export default function OutlinedCard() {
           <React.Fragment>
             <CardContent>
               <Typography variant='h5' component='div'>
-                Pressure:{pressure}
+                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Pressure:&nbsp;&nbsp;&nbsp;&nbsp;{pressure}</span>
               </Typography>
               <Typography variant='h5' component='div'>
-                Valve:{valve ? 'Open' : 'Closed'}
+                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Valve&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;{valve ? 'Open' : 'Closed'}</span>
               </Typography>
             </CardContent>
           </React.Fragment>
