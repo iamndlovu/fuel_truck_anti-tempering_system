@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const TruckSchema = mongoose.Schema({
   plateNo: { type: String, required: true, unique: true },
@@ -8,7 +8,14 @@ const TruckSchema = mongoose.Schema({
   valve: { type: Boolean, default: 0.0 },
   pressure: { type: Number, default: 0.0 },
   weight: { type: Number, default: 0.0 },
-  gps: { type: String, default: "" },
+  gps: {
+    type: Object,
+    default: {
+      longitude: 0,
+      latitude: 0,
+    },
+  },
+  setWeight: { type: Number, default: 0.0 },
 });
 
-module.exports = mongoose.model("Truck", TruckSchema);
+module.exports = mongoose.model('Truck', TruckSchema);
