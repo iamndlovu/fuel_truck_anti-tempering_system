@@ -25,11 +25,11 @@ const Trucks = () => {
         {limitedTrucks &&
           limitedTrucks.map((truck) => (
             <DetailsListItem
-              key={truck.id}
+              key={truck._id}
               avater={truckImg}
               valuePairs={[
                 { name: 'Truck Make', value: truck.make },
-                { name: 'Plate Number', value: truck.id },
+                { name: 'Plate Number', value: truck.plateNo },
                 {
                   name: 'Truck Driver',
                   value: truck.driver ? truck.driver : 'Not Assigned',
