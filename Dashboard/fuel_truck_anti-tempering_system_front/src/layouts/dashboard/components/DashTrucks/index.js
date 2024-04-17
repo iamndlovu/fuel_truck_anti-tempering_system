@@ -2,15 +2,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import limitArray from '../../../../limitArray';
 import styles from './index.module.css';
-import userAvater from '../../../../assets/images/user.png';
+import truckImg from '../../../../assets/images/truck.jpg';
 import DetailsListItem from '../DetailsListItem';
 
-const Drivers = () => {
-  const [limitedDrivers, setLimitedDrivers] = useState(null);
+const Trucks = () => {
+  const [limitedTrucks, setLimitedTrucks] = useState(null);
   useEffect(() => {
     axios
-      .get('http://localhost:1999/driver')
-      .then((res) => setLimitedDrivers(limitArray(res.data.drivers, 3)))
+      .get('http://localhost:1999/truck')
+      .then((res) => setLimitedTrucks(limitArray(res.data.trucks, 3)))
       .catch((err) =>
         console.error(`Failed to fetc drivers with err:\n${err}`)
       );
@@ -19,18 +19,21 @@ const Drivers = () => {
   return (
     <section className={styles.container}>
       <div className={styles.sectionHeader}>
-        <h5>Drivers</h5>
+        <h5>Trucks</h5>
       </div>
       <ul className={styles.content}>
-        {limitedDrivers &&
-          limitedDrivers.map((driver) => (
+        {limitedTrucks &&
+          limitedTrucks.map((truck) => (
             <DetailsListItem
-              key={driver.id}
-              avater={userAvater}
+              key={truck.id}
+              avater={truckImg}
               valuePairs={[
-                { name: 'Driver Name', value: driver.name },
-                { name: 'Driver ID', value: driver.id },
-                { name: 'Phone Number', value: driver.phone },
+                { name: 'Truck Make', value: truck.make },
+                { name: 'Plate Number', value: truck.id },
+                {
+                  name: 'Truck Driver',
+                  value: truck.driver ? truck.driver : 'Not Assigned',
+                },
               ]}
             />
           ))}
@@ -43,18 +46,18 @@ const Drivers = () => {
         }}
       >
         <a
-          href='/drivers'
+          href='/trucks'
           style={{
             color: '#1A73E8',
             fontWeight: '700',
             textTransform: 'uppercase',
           }}
         >
-          More drivers
+          More trucks
         </a>
       </button>
     </section>
   );
 };
 
-export default Drivers;
+export default Trucks;

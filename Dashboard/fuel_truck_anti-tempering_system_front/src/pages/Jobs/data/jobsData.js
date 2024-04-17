@@ -24,7 +24,8 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDProgress from "components/MDProgress";
-import axios from "../../../axiosInstance"
+import axios from "../../../axiosInstance";
+import limitArray from '../../../limitArray';
 
 // Images
 import logoJobs from "assets/images/jobs.png"
@@ -37,7 +38,7 @@ import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 import {Routes,Route,Link,useNavigate,useLocation} from 'react-router-dom';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 
-export default function data() {
+export default function data(lim) {
   const [jobData, setJobData] = useState([])
 
 
@@ -114,9 +115,11 @@ export default function data() {
   )
     }) : ""
 
+    if(lim) values = limitArray(values, lim)
     console.log(values)
     setJobData(values)
 }
+    
   return {
     columns: [
       { Header: "Company", accessor: "Company", width: "30%", align: "left" },
