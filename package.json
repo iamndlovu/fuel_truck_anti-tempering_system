@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/iamndlovu/fuel_truck_anti-tempering_system#readme",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0"
   }
 }
