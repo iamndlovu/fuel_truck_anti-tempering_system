@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import axios from '../../../axiosInstance';
-import mqtt from 'mqtt';
 
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -40,10 +39,6 @@ const bull = (
   </Box>
 );
 
-// const fuel = (
-
-//   );
-
 export default function OutlinedCard() {
   var options = {
     host: '192.168.137.1',
@@ -53,27 +48,11 @@ export default function OutlinedCard() {
     password: '',
   };
 
-  const [client, setClient] = useState(null);
   const [truckData, setTruckData] = useState([]);
-
-  // const [longitude, setLongitude] = useState("0");
-  // const [latitude, setLatitude] = useState("0");
-  // const [fuel, setFuel] = useState(0.1);
-
-  // const [time, setTime] = useState("0");
 
   const navigate = useNavigate();
   const { state } = useLocation();
   const truckId = state.truckId;
-
-  //var task;
-  // if(state.job){
-  //   task =  state.job
-  // }
-  //state.job ? (task = state.job) : '';
-
-  // console.log('task is')
-  // console.log(task)
 
   const url = '/truck/manage?id=' + truckId;
   console.log(url);
@@ -81,84 +60,30 @@ export default function OutlinedCard() {
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    
-    const fetchTruckData = async() => {
+
+    const fetchTruckData = async () => {
       try {
         const res = await axios.get(url);
         const fetchedTruckData = await res.data.truck;
         isMounted && setTruckData(fetchedTruckData);
-      } catch(err) {
-        console.log(`Component \'ManageTruck.js\' failed to fetch truck data with the following error:\n${err}`);
+      } catch (err) {
+        console.log(
+          `Component \'ManageTruck.js\' failed to fetch truck data with the following error:\n${err}`
+        );
       }
     };
     fetchTruckData();
-    const fetchTruckDataPeriodically = setInterval(() => fetchTruckData(),5500);
-
-    /*axios
-      .get(url)
-      .then((response) => {
-        console.log('no error');
-        console.log(response.data.truck);
-
-        isMounted && setTruckData(response.data.truck);
-        console.log('truck');
-        console.log(truckData);
-      })
-      .catch((err) => {
-        console.log('error');
-        console.log(err);
-      });*/
+    const fetchTruckDataPeriodically = setInterval(
+      () => fetchTruckData(),
+      17000
+    );
     return () => {
       clearInterval(fetchTruckDataPeriodically);
       isMounted = false;
       controller.abort(); //cancel any pending requests when the component unmounts
     };
   }, []);
-/*
-  const mqttDisconnect = () => {
-    if (client) {
-      client.end(() => {
-        console.log('disconnected');
-      });
-    }
-  };
 
-  useEffect(() => {
-    setClient(mqtt.connect(options));
-  }, []);
-  useEffect(() => {
-    if (client) {
-      console.log(client);
-      client.on('connect', () => {
-        console.log('connected');
-        client.subscribe('truck/gps');
-      });
-      client.on('error', (err) => {
-        console.error('Connection error: ', err);
-        client.end();
-      });
-      client.on('reconnect', () => {});
-      client.on('message', (topic, message) => {
-        //   const payload = { topic, message: message.toString() };
-        //   setPayload(payload);
-        var top = topic.toString();
-        var mess = JSON.parse(message);
-
-        if (top == 'truck/gps') {
-          console.log(mess);
-          //setLatitude(mess.latitude);
-          //setLongitude(mess.longitude);
-          //   setpanicTime(mess.time)
-          //   setpanicId(mess.device_id)
-        }
-      });
-    }
-    console.log('running');
-    return () => {
-      mqttDisconnect();
-    };
-  }, [client]);
-*/
   let { level, valve, pressure, weight, gps, setWeight } = truckData;
   if (!gps)
     gps = {
@@ -170,8 +95,6 @@ export default function OutlinedCard() {
 
   return (
     <>
-      {/* <button onClick={decreaseFuel}>--</button>
-    <button onClick={increaseFuel}>+</button> */}
       <Grid container spacing={3} alignItems='center'>
         <Grid item>
           <MDAvatar src={truckImg} alt='profile-image' size='xl' shadow='sm' />
@@ -233,12 +156,12 @@ export default function OutlinedCard() {
                 arcPadding={0.1}
                 cornerRadius={3}
                 colors={['#c30010', '#F5CD19', '#00FF00']}
-                percent={level}
+                percent={level / 100}
                 textColor='#9ABDDC'
               />
             </CardContent>
             <CardActions>
-              <Button size='small'>take action</Button>
+              {/*<Button size='small'>take action</Button>*/}
             </CardActions>
           </React.Fragment>
         </Card>
@@ -278,9 +201,7 @@ export default function OutlinedCard() {
                 <span style={{ fontSize: 50, color: '#4169e1' }}>kg</span>
               </Typography>
             </CardContent>
-            <CardActions>
-              {/* <Button size="small">take action</Button> */}
-            </CardActions>
+            <CardActions></CardActions>
           </React.Fragment>
         </Card>
         <Card
@@ -293,10 +214,18 @@ export default function OutlinedCard() {
                 location
               </Typography>
               <Typography variant='h5' component='div'>
-                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Latitude&nbsp;:&nbsp;&nbsp;{latitude}</span>
+                <span
+                  style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                >
+                  Latitude&nbsp;:&nbsp;&nbsp;{latitude}
+                </span>
               </Typography>
               <Typography variant='h5' component='div'>
-                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Longitude:&nbsp;&nbsp;{longitude}</span> 
+                <span
+                  style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                >
+                  Longitude:&nbsp;&nbsp;{longitude}
+                </span>
               </Typography>
             </CardContent>
             <CardActions>
@@ -316,10 +245,19 @@ export default function OutlinedCard() {
           <React.Fragment>
             <CardContent>
               <Typography variant='h5' component='div'>
-                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Pressure:&nbsp;&nbsp;&nbsp;&nbsp;{pressure}</span>
+                <span
+                  style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                >
+                  Pressure:&nbsp;&nbsp;&nbsp;&nbsp;{pressure}
+                </span>
               </Typography>
               <Typography variant='h5' component='div'>
-                <span style={{fontFamily: '\'Courier New\', Courier, monospace'}}>Valve&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;{valve ? 'Open' : 'Closed'}</span>
+                <span
+                  style={{ fontFamily: "'Courier New', Courier, monospace" }}
+                >
+                  Valve&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;
+                  {valve ? 'Open' : 'Closed'}
+                </span>
               </Typography>
             </CardContent>
           </React.Fragment>

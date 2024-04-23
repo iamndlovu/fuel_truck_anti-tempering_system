@@ -4,15 +4,7 @@ const jobs = require('../models/jobs');
 const trucks = require('../models/trucks');
 
 router.post('/', (req, res) => {
-  var data = req.body;
-  var company = data.company;
-  var goods = data.goods;
-  var jobNo = data.jobNo;
-  // var driver = data.driver
-  var driverId = data.driverId;
-  var status = data.status;
-  var weight = data.weight;
-  // console.log(name)
+  const { company, goods, jobNo, driverId, status, weight } = req.body;
   if (status.toLowerCase() == 'not complete') {
     trucks.findOne({ driver: driverId }).then((truck) => {
       truck.setWeight = weight;
@@ -30,7 +22,7 @@ router.post('/', (req, res) => {
     console.log('missing field');
     res.status(403).send({ message: 'missing field' });
   } else {
-    var jobsData = new jobs({
+    const jobsData = new jobs({
       jobNo,
       company,
       goods,
@@ -54,9 +46,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/manage', (req, res) => {
-  var data = req.query;
-  var id = data.id;
-  console.log(id);
+  const { id } = req.query;
   jobs.find({ jobNo: id }).then((_res) => {
     console.log(_res);
     res.status(200).send({ message: 'done', job: _res[0] });

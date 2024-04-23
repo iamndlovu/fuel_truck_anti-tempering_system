@@ -34,7 +34,9 @@ router.post('/update/tank/:id', (req, res) => {
     .findById(req.params.id)
     .then((truck) => {
       truck.level = req.body.level || truck.level;
-      truck.valve = req.body.valve || truck.valve;
+      req.body.hasOwnProperty('valve')
+        ? (truck.valve = req.body.valve)
+        : (truck.valve = truck.valve);
       truck.pressure = req.body.pressure || truck.pressure;
       truck.weight = req.body.weight || truck.weight;
       truck.gps = req.body.gps || truck.gps;
@@ -74,11 +76,9 @@ router.post('/updatedriver', (req, res) => {
 
 router.get('/manage', (req, res) => {
   const { id } = req.query;
-  console.log(id);
   trucks
     .findOne({ plateNo: id })
     .then((_res) => {
-      console.log(_res);
       res.status(200).send({ message: 'done', truck: _res });
     })
     .catch((err) => {
@@ -92,17 +92,14 @@ router.get('/', (req, res) => {
     .find()
     .exec()
     .then((_res) => {
-      console.log(_res);
       res.status(200).send({ trucks: _res });
     });
 });
 
 router.get('/fetchtruck', (req, res) => {
   const { id } = req.query;
-  console.log(`Driver ID: ${id}`);
   try {
     trucks.findOne({ driver: id }).then((_res) => {
-      console.log(_res);
       res.status(200).send({ message: 'done', truck: _res });
     });
   } catch (err) {
