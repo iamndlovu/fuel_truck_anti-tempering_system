@@ -75,7 +75,7 @@ export default function OutlinedCard() {
     fetchTruckData();
     const fetchTruckDataPeriodically = setInterval(
       () => fetchTruckData(),
-      17000
+      7000
     );
     return () => {
       clearInterval(fetchTruckDataPeriodically);

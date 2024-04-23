@@ -17,8 +17,8 @@ const String truckId = "661fe402119ba44ad3c38185";
 
 const float fullTankPingVal_cm = 2.30, emptyTankPingVal_cm = 30.00;
 
-const char* ssid     = "el-pn";
-const char* password = "12345678";
+const char* ssid     = "MQ008";
+const char* password = "Donsi008hot";
 
 char serverAddress[] = "192.168.43.190";  // server address # check on list of connected device in hotspotting phone!!
 int port = 1999;
@@ -90,8 +90,8 @@ void loop(){
 
 void sendInfo(){
   Serial.println("Sending with gps data...");
-  Serial.println("\nWait 25 seconds\n\n");
-  delay(20000);
+  Serial.println("\nWait 10 seconds\n\n");
+  delay(5000);
   JsonDocument sensorDataObject;
   JsonDocument gpsData;
   
