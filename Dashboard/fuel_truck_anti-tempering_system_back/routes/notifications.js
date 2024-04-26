@@ -7,7 +7,6 @@ router.get('/', (req, res) => {
     .find()
     .exec()
     .then((_not) => {
-      console.log(_not);
       res.status(200).send({ not: _not });
     });
 });

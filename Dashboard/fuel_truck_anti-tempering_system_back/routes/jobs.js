@@ -4,10 +4,14 @@ const jobs = require('../models/jobs');
 const trucks = require('../models/trucks');
 
 router.post('/', (req, res) => {
-  const { company, goods, jobNo, driverId, status, weight } = req.body;
+  const { company, goods, jobNo, driverId, status, weight, pressure, level } =
+    req.body;
   if (status.toLowerCase() == 'not complete') {
     trucks.findOne({ driver: driverId }).then((truck) => {
       truck.setWeight = weight;
+      truck.setLevel = level;
+      truck.setPressure = pressure;
+      truck.jobComplete = false;
       truck.save();
     });
   }
@@ -40,7 +44,6 @@ router.get('/', (req, res) => {
     .find()
     .exec()
     .then((_res) => {
-      console.log(_res);
       res.status(200).send({ jobs: _res });
     });
 });

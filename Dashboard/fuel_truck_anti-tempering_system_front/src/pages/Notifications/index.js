@@ -23,7 +23,6 @@ import Card from '@mui/material/Card';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import MDAlert from 'components/MDAlert';
-import MDButton from 'components/MDButton';
 import MDSnackbar from 'components/MDSnackbar';
 
 // Material Dashboard 2 React example components
@@ -55,11 +54,7 @@ function Notifications() {
     axios
       .get('/notification')
       .then((response) => {
-        console.log('no error');
-        // console.log(response.data.trucks);
-
         isMounted && setNotifications(response.data.not);
-        console.log('notifications');
         console.log(Notifications);
       })
       .catch((err) => {
@@ -72,9 +67,17 @@ function Notifications() {
     };
   }, []);
 
-  const alertContent = (name) => (
+  const alertContent = ({ time, location, truck, message }) => (
     <MDTypography variant='body2' color='white'>
-      {name}
+      <h3>{message.toUpperCase()}</h3>
+      <br />
+      <b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      {`${new Date(time).toLocaleString()}`}
+      <br />
+      <b>Location:</b>&nbsp;&nbsp;&nbsp;&nbsp;
+      {`[latitude: ${location.latitude}, longitude: ${location.longitude}]`}
+      <br />
+      <b>Truck No:</b>&nbsp;&nbsp;&nbsp;{`${truck}`}
     </MDTypography>
   );
 
@@ -151,48 +154,8 @@ function Notifications() {
               </MDBox>
             </Card>
           </Grid>
-
-          {/* <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2} lineHeight={0}>
-                <MDTypography variant="h5">Notifications</MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  Notifications on this page use Toasts from Bootstrap. Read more details here.
-                </MDTypography>
-              </MDBox>
-              <MDBox p={2}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="success" onClick={openSuccessSB} fullWidth>
-                      success notification
-                    </MDButton>
-                    {renderSuccessSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="info" onClick={openInfoSB} fullWidth>
-                      info notification
-                    </MDButton>
-                    {renderInfoSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="warning" onClick={openWarningSB} fullWidth>
-                      warning notification
-                    </MDButton>
-                    {renderWarningSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
-                      error notification
-                    </MDButton>
-                    {renderErrorSB}
-                  </Grid>
-                </Grid>
-              </MDBox>
-            </Card>
-          </Grid> */}
         </Grid>
       </MDBox>
-      {/* <Footer /> */}
     </DashboardLayout>
   );
 }

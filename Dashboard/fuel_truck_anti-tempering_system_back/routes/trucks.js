@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const trucks = require('../models/trucks');
+const jobs = require('../models/jobs');
+const notifications = require('../models/notifications');
 
 router.post('/', (req, res) => {
   const { plateNo, make, level, valve, pressure, weight, gps, setWeight } =
@@ -41,6 +43,9 @@ router.post('/update/tank/:id', (req, res) => {
       truck.weight = req.body.weight || truck.weight;
       truck.gps = req.body.gps || truck.gps;
       truck.setWeight = req.body.setWeight || truck.setWeight;
+      req.body.hasOwnProperty('compromised')
+        ? (truck.compromised = req.body.compromised)
+        : (truck.compromised = truck.compromised);
       truck
         .save()
         .then(() => res.json('truck updated'))
@@ -105,6 +110,34 @@ router.get('/fetchtruck', (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).send({ message: err, truck: null });
+  }
+});
+
+router.post('/addAlert', async (req, res) => {
+  const { driver, _id, message } = req.body;
+
+  try {
+    const truck = await trucks.findById(_id);
+    const job = await jobs.findOne({ driverId: driver });
+
+    const newNotification = new notifications({
+      jobNo: job.jobNo,
+      notification: {
+        message,
+        time: new Date(),
+        location: truck.gps,
+        truck: truck.plateNo,
+      },
+    });
+
+    truck.compromised = true;
+    truck.save();
+    const notRes = await newNotification.save();
+    res.json(notRes);
+    console.table(notRes);
+  } catch (err) {
+    console.error(`Failed to add alert with error: ${err}`);
+    res.status(400).json(`Failed to add alert with error: ${err}`);
   }
 });
 

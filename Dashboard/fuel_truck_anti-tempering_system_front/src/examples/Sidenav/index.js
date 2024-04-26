@@ -63,11 +63,115 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [notificationsLength, setNotificationsLength] = useState(0);
 
   useEffect(() => {
-    (async () => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchNotifications = async () => {
       const notificationRes = await axios.get('/notification');
       const notifications = notificationRes.data.not;
       setNotificationsLength(notifications.length);
-    })();
+      console.log(`Notifications length: ${notifications.length}`);
+    };
+
+    const fetchTrucks = async () => {
+      try {
+        console.log('fetching trucks...');
+        const truckRes = await axios.get('/truck');
+        const fetchedTrucks = await truckRes.data.trucks;
+        console.log('number of trucks: ' + fetchedTrucks.length);
+        return fetchedTrucks;
+      } catch (err) {
+        console.log(
+          `Component \'App.js\' failed to fetch data with the following error:\n${err}`
+        );
+      }
+    };
+
+    fetchNotifications();
+    fetchTrucks();
+
+    const fetchNotificationsPeriodically = setInterval(
+      () => fetchNotifications(),
+      7000
+    );
+    const fetchTrucksPeriodically = setInterval(() => {
+      fetchTrucks().then((data) => {
+        data.forEach((truck) => {
+          const {
+            level,
+            weight,
+            pressure,
+            setLevel,
+            setWeight,
+            setPressure,
+            jobComplete,
+            compromised,
+            valve,
+            driver,
+            _id,
+            make,
+          } = truck;
+          let message = '';
+          console.log('checking...' + make);
+          if (jobComplete == false && compromised == false) {
+            console.log(make + ' has an incomplete job, not yet compromised');
+            if (setLevel - level > 4) {
+              message += 'level, ';
+              console.log(
+                make + ' level decreased by ' + (setLevel - level) + '%'
+              );
+            } else {
+              console.log(make + ' level unchanged');
+            }
+
+            if (setPressure - pressure > 3) {
+              message += 'pressure, ';
+              console.log(
+                make +
+                  ' pressure decreased by ' +
+                  (setPressure - pressure) +
+                  'bar'
+              );
+            } else {
+              console.log(make + ' pressure unchanged');
+            }
+
+            if (setWeight - weight > 3) {
+              message += 'weight, ';
+              console.log(
+                make + ' weight decreased by ' + (setWeight - weight) + 'kg'
+              );
+            } else {
+              console.log(make + ' weight unchanged');
+            }
+
+            if (message.length > 3) message += 'reduced. ';
+
+            if (valve) {
+              message += 'Valve opened!';
+            } else {
+            }
+          } else {
+            console.log(make + ' has no incomplete jobs, or is compromised');
+          }
+
+          if (message.length > 3) {
+            console.log('message: ' + message);
+            console.log('adding notification....');
+            axios
+              .post('/truck/addAlert', { driver, _id, message })
+              .then((res) => console.log(res.data));
+          }
+        });
+      });
+    }, 10000);
+
+    return () => {
+      clearInterval(fetchNotificationsPeriodically);
+      clearInterval(fetchTrucksPeriodically);
+      isMounted = false;
+      controller.abort(); //cancel any pending requests when the component unmounts
+    };
   }, []);
 
   let textColor = 'white';
