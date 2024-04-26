@@ -1,56 +1,56 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from 'react';
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 // @mui material components
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Icon from '@mui/material/Icon';
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
+import MDBox from 'components/MDBox';
 
 // Material Dashboard 2 React example components
-import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
+import Sidenav from 'examples/Sidenav';
+import Configurator from 'examples/Configurator';
 
 // Material Dashboard 2 React themes
-import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
+import theme from 'assets/theme';
+import themeRTL from 'assets/theme/theme-rtl';
 
 // Material Dashboard 2 React Dark Mode themes
-import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
+import themeDark from 'assets/theme-dark';
+import themeDarkRTL from 'assets/theme-dark/theme-rtl';
 
 // RTL plugins
-import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import rtlPlugin from 'stylis-plugin-rtl';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 
 // Material Dashboard 2 React routes
-import routes from "routes";
+import routes from 'routes';
 
 // Material Dashboard 2 React contexts
 import {
   useMaterialUIController,
   setMiniSidenav,
   setOpenConfigurator,
-} from "context";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
+} from 'context';
+import SignIn from 'layouts/authentication/sign-in';
+import SignUp from 'layouts/authentication/sign-up';
 
 // Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
-import ProtectedRoutes from "ProtectedRoutes";
-import AddTruck from "pages/Trucks/AddTruck";
-import AddJobs from "pages/Jobs/addJobs";
-import ManageTruck from "pages/ManageTruck/index";
-import AddDriver from "pages/drivers/addDriver";
-import AssignDriver from "pages/ManageTruck/assignDriver";
-import Addnotification from "pages/Notifications/addNotifications";
-import ManageJob from "pages/ManageJob";
+import brandWhite from 'assets/images/logo-ct.png';
+import brandDark from 'assets/images/logo-ct-dark.png';
+import ProtectedRoutes from 'ProtectedRoutes';
+import AddTruck from 'pages/Trucks/AddTruck';
+import AddJobs from 'pages/Jobs/addJobs';
+import ManageTruck from 'pages/ManageTruck/index';
+import AddDriver from 'pages/drivers/addDriver';
+import AssignDriver from 'pages/ManageTruck/assignDriver';
+import Addnotification from 'pages/Notifications/addNotifications';
+import ManageJob from 'pages/ManageJob';
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -71,7 +71,7 @@ export default function App() {
   // Cache for the rtl
   useMemo(() => {
     const cacheRtl = createCache({
-      key: "rtl",
+      key: 'rtl',
       stylisPlugins: [rtlPlugin],
     });
 
@@ -96,11 +96,11 @@ export default function App() {
 
   // Change the openConfigurator state
   // const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const handleConfiguratorOpen = () => console.log("opened");
+  const handleConfiguratorOpen = () => console.log('opened');
 
   // Setting the dir attribute for the body element
   useEffect(() => {
-    document.body.setAttribute("dir", direction);
+    document.body.setAttribute('dir', direction);
   }, [direction]);
 
   // Setting page scroll to 0 when changing the route
@@ -131,33 +131,33 @@ export default function App() {
 
   const configsButton = (
     <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="3.25rem"
-      height="3.25rem"
-      bgColor="white"
-      shadow="sm"
-      borderRadius="50%"
-      position="fixed"
-      right="2rem"
-      bottom="2rem"
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+      width='3.25rem'
+      height='3.25rem'
+      bgColor='white'
+      shadow='sm'
+      borderRadius='50%'
+      position='fixed'
+      right='2rem'
+      bottom='2rem'
       zIndex={99}
-      color="dark"
-      sx={{ cursor: "pointer" }}
+      color='dark'
+      sx={{ cursor: 'pointer' }}
       onClick={handleConfiguratorOpen}
     >
-      <Icon fontSize="small" color="inherit">
+      <Icon fontSize='small' color='inherit'>
         settings
       </Icon>
     </MDBox>
   );
 
-  return direction === "rtl" ? (
+  return direction === 'rtl' ? (
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
-        {layout === "dashboard" && (
+        {layout === 'dashboard' && (
           <>
             <Sidenav
               color={sidenavColor}
@@ -166,7 +166,7 @@ export default function App() {
                   ? brandDark
                   : brandWhite
               }
-              brandName="Material Dashboard 2"
+              brandName='Material Dashboard 2'
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -175,17 +175,17 @@ export default function App() {
             {configsButton}
           </>
         )}
-        {layout === "vr" && <Configurator />}
+        {layout === 'vr' && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path='*' element={<Navigate to='/dashboard' />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {layout === 'dashboard' && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -194,7 +194,7 @@ export default function App() {
                 ? brandDark
                 : brandWhite
             }
-            brandName="FTMS"
+            brandName='FTMS'
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
@@ -203,21 +203,21 @@ export default function App() {
           {configsButton}
         </>
       )}
-      {layout === "vr" && <Configurator />}
+      {layout === 'vr' && <Configurator />}
       <Routes>
         <Route element={<ProtectedRoutes />}>
           {getRoutes(routes)}
-          <Route path="/addtruck" element={<AddTruck />} />
-          <Route path="/addjob" element={<AddJobs />} />
-          <Route path="/managetruck" element={<ManageTruck />} />
-          <Route path="/adddriver" element={<AddDriver />} />
-          <Route path="/assigndriver" element={<AssignDriver />} />
-          <Route path="/managejob" element={<ManageJob />} />
+          <Route path='/addtruck' element={<AddTruck />} />
+          <Route path='/addjob' element={<AddJobs />} />
+          <Route path='/managetruck' element={<ManageTruck />} />
+          <Route path='/adddriver' element={<AddDriver />} />
+          <Route path='/assigndriver' element={<AssignDriver />} />
+          <Route path='/managejob' element={<ManageJob />} />
         </Route>
-        <Route path="/authentication/sign-in" element={<SignIn />} />
-        <Route path="/authentication/sign-up" element={<SignUp />} />
-        <Route path="/addnot" element={<Addnotification />} />
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path='/authentication/sign-in' element={<SignIn />} />
+        <Route path='/authentication/sign-up' element={<SignUp />} />
+        <Route path='/addnot' element={<Addnotification />} />
+        <Route path='*' element={<Navigate to='/dashboard' />} />
       </Routes>
     </ThemeProvider>
   );

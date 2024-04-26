@@ -13,32 +13,31 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 // @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDAlert from "components/MDAlert";
-import MDButton from "components/MDButton";
-import MDSnackbar from "components/MDSnackbar";
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
+import MDAlert from 'components/MDAlert';
+import MDButton from 'components/MDButton';
+import MDSnackbar from 'components/MDSnackbar';
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import axios from "../../axiosInstance"
-
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
+import Footer from 'examples/Footer';
+import axios from '../../axiosInstance';
 
 function Notifications() {
   const [successSB, setSuccessSB] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
   const [warningSB, setWarningSB] = useState(false);
   const [errorSB, setErrorSB] = useState(false);
-  const [notifications,setNotifications] = useState([])
+  const [notifications, setNotifications] = useState([]);
 
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
@@ -49,44 +48,43 @@ function Notifications() {
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    axios.get('/notification')
-    .then(response=>{
-        console.log("no error")
+    axios
+      .get('/notification')
+      .then((response) => {
+        console.log('no error');
         // console.log(response.data.trucks);
 
         isMounted && setNotifications(response.data.not);
-        console.log("notifications")
-        console.log(Notifications)
-        
-
-    })
-    .catch(err=>{
-        console.log("error")
-       console.log(err)
-    })
-  return ()=>{
-      isMounted=false;
+        console.log('notifications');
+        console.log(Notifications);
+      })
+      .catch((err) => {
+        console.log('error');
+        console.log(err);
+      });
+    return () => {
+      isMounted = false;
       controller.abort(); //cancel any pending requests when the component unmounts
-  }
-},[])
+    };
+  }, []);
 
   const alertContent = (name) => (
-    <MDTypography variant="body2" color="white">
-      {name} 
+    <MDTypography variant='body2' color='white'>
+      {name}
     </MDTypography>
   );
 
   const renderSuccessSB = (
     <MDSnackbar
-      color="success"
-      icon="check"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
+      color='success'
+      icon='check'
+      title='Material Dashboard'
+      content='Hello, world! This is a notification message'
+      dateTime='11 mins ago'
       open={successSB}
       onClose={closeSuccessSB}
       close={closeSuccessSB}
@@ -96,10 +94,10 @@ function Notifications() {
 
   const renderInfoSB = (
     <MDSnackbar
-      icon="notifications"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
+      icon='notifications'
+      title='Material Dashboard'
+      content='Hello, world! This is a notification message'
+      dateTime='11 mins ago'
       open={infoSB}
       onClose={closeInfoSB}
       close={closeInfoSB}
@@ -108,11 +106,11 @@ function Notifications() {
 
   const renderWarningSB = (
     <MDSnackbar
-      color="warning"
-      icon="star"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
+      color='warning'
+      icon='star'
+      title='Material Dashboard'
+      content='Hello, world! This is a notification message'
+      dateTime='11 mins ago'
       open={warningSB}
       onClose={closeWarningSB}
       close={closeWarningSB}
@@ -122,11 +120,11 @@ function Notifications() {
 
   const renderErrorSB = (
     <MDSnackbar
-      color="error"
-      icon="warning"
-      title="Material Dashboard"
-      content="Hello, world! This is a notification message"
-      dateTime="11 mins ago"
+      color='error'
+      icon='warning'
+      title='Material Dashboard'
+      content='Hello, world! This is a notification message'
+      dateTime='11 mins ago'
       open={errorSB}
       onClose={closeErrorSB}
       close={closeErrorSB}
@@ -138,21 +136,18 @@ function Notifications() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mt={6} mb={3}>
-        <Grid container spacing={3} justifyContent="center">
+        <Grid container spacing={3} justifyContent='center'>
           <Grid item xs={12} lg={8}>
             <Card>
               <MDBox p={2}>
-                <MDTypography variant="h5">notifications</MDTypography>
+                <MDTypography variant='h5'>notifications</MDTypography>
               </MDBox>
               <MDBox pt={2} px={2}>
-                {
-                  notifications.map(value=>
-                    <MDAlert key={value.jobNo} color="error" dismissible>
-                      {alertContent(value.notification)}
-                    </MDAlert>
-                    )
-                }
-
+                {notifications.map((value) => (
+                  <MDAlert key={value.jobNo} color='error' dismissible>
+                    {alertContent(value.notification)}
+                  </MDAlert>
+                ))}
               </MDBox>
             </Card>
           </Grid>
