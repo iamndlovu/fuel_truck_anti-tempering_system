@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
     .exec()
     .then((_users) => {
       console.log(_users);
-      res.status(200).send(_users);
+      res.status(200).json(_users);
     });
 });
 
