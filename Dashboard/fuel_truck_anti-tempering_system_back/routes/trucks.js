@@ -46,6 +46,7 @@ router.post('/update/tank/:id', (req, res) => {
       req.body.hasOwnProperty('compromised')
         ? (truck.compromised = req.body.compromised)
         : (truck.compromised = truck.compromised);
+      truck.weight < 0 ? (truck.weight = 10) : (truck.weight = truck.weight);
       truck
         .save()
         .then(() => res.json('truck updated'))
@@ -119,6 +120,7 @@ router.post('/addAlert', async (req, res) => {
   try {
     const truck = await trucks.findById(_id);
     const job = await jobs.findOne({ driverId: driver });
+    if (!job || !truck) return;
 
     const newNotification = new notifications({
       jobNo: job.jobNo,
@@ -130,7 +132,11 @@ router.post('/addAlert', async (req, res) => {
       },
     });
 
-    truck.compromised = true;
+    if (message.includes('weight')) truck.weightCompromised = true;
+    if (message.includes('level')) truck.levelCompromised = true;
+    if (message.includes('valve')) truck.valveCompromised = true;
+    if (message.includes('pressure')) truck.pressureCompromised = true;
+
     truck.save();
     const notRes = await newNotification.save();
     res.json(notRes);

@@ -5,17 +5,19 @@
 #include <TinyGPSPlus.h>
 #include <SoftwareSerial.h>
 #include <ArduinoJson.h>
+#include "HX711.h"
 /*****************************************************************************
- *  Pressure -> Pin 33                                                       *
- *  Valve -> Pin 23                                                          *
+ *  Pressure -> Pin 35                                                       *
+ *  Valve -> Pin 19                                                          *
  *  Ultrasonic -> Pin 12 & 13                                                *
- *  GPS -> Pin 2 & 4                                                         *
+ *  GPS -> Pin 32 & 34                                                       *
+ *  HX711 -> Pin 16 & 4                                                      *
  *****************************************************************************/
-const int pressPin = 33, valvePin = 19;
+const int pressPin = 35, valvePin = 19;
 
-const String truckId = "661fe402119ba44ad3c38185";
+const String truckId = "662bf28c920ec610546933a4";
 
-const float fullTankPingVal_cm = 2.30, emptyTankPingVal_cm = 30.00;
+const float fullTankPingVal_cm = 4.00, emptyTankPingVal_cm = 17.00;
 
 const char* ssid     = "MQ008";
 const char* password = "Donsi008hot";
@@ -37,22 +39,33 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and
 // RX and TX pin from context of controller!
 //controller RX <--> GPS TX
 // controller TX <--> GPS RX
-static const int RXPin = 4, TXPin = 2;
+static const int RXPin = 34, TXPin = 32;
 static const uint32_t GPSBaud = 9600;
 
 // The TinyGPSPlus object
 TinyGPSPlus gps;
+
+// hx711 object
+HX711 scale;
+uint8_t dataPin = 16;
+uint8_t clockPin = 4;
 
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
 void setup() {
     pinMode(valvePin, INPUT);
+    pinMode(15, OUTPUT);
     //set the resolution to 12 bits (0-4096)
     analogReadResolution(12);
   
     Serial.begin(9600);
     while(!Serial){delay(100);}
+
+    scale.begin(dataPin, clockPin);
+    // Obtained from HX711 calibration
+    scale.set_offset(35644);
+    scale.set_scale(9.298984);
 
     Serial.println();
     Serial.println("******************************************************");
@@ -62,8 +75,12 @@ void setup() {
     WiFi.begin(ssid, password);
 
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
+      Serial.print(".");
+      delay(500);
+      digitalWrite(15, LOW);
+      Serial.print(".");
+      delay(500);
+      digitalWrite(15, HIGH);
     }
 
     Serial.println("");
@@ -84,13 +101,26 @@ void loop(){
   if((millis() > 5000) && (gps.charsProcessed() < 10)) {
       Serial.println(F("No GPS detected: check wiring."));
       sendInfoWithoutGps();
-      while(true);
+      // while(true);
     }
 }
 
 void sendInfo(){
   Serial.println("Sending with gps data...");
   Serial.println("\nWait 10 seconds\n\n");
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.begin(ssid, password);
+  } else {
+    digitalWrite(15, HIGH);
+  }
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    digitalWrite(15, LOW);
+    delay(500);
+    digitalWrite(15, HIGH);
+  }
+
   delay(5000);
   JsonDocument sensorDataObject;
   JsonDocument gpsData;
@@ -113,7 +143,14 @@ void sendInfo(){
   float level = 100 - (100 * (distance_cm - fullTankPingVal_cm) / (emptyTankPingVal_cm - fullTankPingVal_cm));
   sensorDataObject["level"] = level;
 
-  //Pressure
+  // HX711
+  float weight_g = scale.get_units(20)/10;
+  if (weight_g < 0.0) {
+    weight_g = 15.34; 
+  }
+  sensorDataObject["weight"] = weight_g;
+
+  // Pressure
   int pressure  = analogReadMilliVolts(pressPin);
   sensorDataObject["pressure"] = pressure;
 
@@ -152,6 +189,20 @@ void sendInfo(){
 void sendInfoWithoutGps(){
   Serial.println("Sending without gps data...");
   Serial.println("\nWait 25 seconds\n\n");
+
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.begin(ssid, password);
+  } else {
+    digitalWrite(15, HIGH);
+  }
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    digitalWrite(15, LOW);
+    delay(500);
+    digitalWrite(15, HIGH);
+  }
+
   delay(20000);
   JsonDocument sensorDataObject;
 
@@ -159,6 +210,10 @@ void sendInfoWithoutGps(){
   float distance_cm = sonar.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
   float level = 100 - (100 * (distance_cm - fullTankPingVal_cm) / (emptyTankPingVal_cm - fullTankPingVal_cm));
   sensorDataObject["level"] = level;
+
+  // HX711
+  float weight_g = scale.get_units(20)/10;
+  sensorDataObject["weight"] = weight_g;
 
   //Pressure
   int pressure  = analogReadMilliVolts(pressPin);
@@ -175,8 +230,10 @@ void sendInfoWithoutGps(){
 
   // send JSON data to server
   String endpoint = "/truck/update/tank/" + truckId;
+  // String endpoint = "/";
   client.beginRequest();
   client.post(endpoint);
+  // client.get(endpoint);
   client.sendHeader("Content-Type", "application/json");
   client.sendHeader("Content-Length", sensorDataObjectString.length());
   client.sendHeader("Connection", "close");

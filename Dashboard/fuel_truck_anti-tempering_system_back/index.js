@@ -21,6 +21,10 @@ const db = mongoose.connection;
 db.on('error', (error) => console.log(error));
 db.once('open', () => console.log('DB Connected'));
 
+app.get('/', (req, res) => {
+  res.end("hello");
+});
+
 app.listen(1999, (req, res) => {
   console.log('Server running on port 1999');
 });

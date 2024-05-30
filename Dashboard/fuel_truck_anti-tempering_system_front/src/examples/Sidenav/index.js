@@ -101,66 +101,77 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             level,
             weight,
             pressure,
+            valve,
             setLevel,
             setWeight,
             setPressure,
             jobComplete,
-            compromised,
-            valve,
+            weightCompromised,
+            levelCompromised,
+            pressureCompromised,
+            valveCompromised,
             driver,
             _id,
             make,
           } = truck;
-          let message = '';
           console.log('checking...' + make);
-          if (jobComplete == false && compromised == false) {
-            console.log(make + ' has an incomplete job, not yet compromised');
-            if (setLevel - level > 4) {
-              message += 'level, ';
+          if (jobComplete == false) {
+            console.log(make + ' has an incomplete job');
+            if (setLevel - level > 10 && !levelCompromised) {
+              const message = 'level decreased by ' + (setLevel - level) + '%';
               console.log(
                 make + ' level decreased by ' + (setLevel - level) + '%'
               );
+              console.log('adding notification....');
+              axios
+                .post('/truck/addAlert', { driver, _id, message })
+                .then((res) => console.log(res.data));
             } else {
-              console.log(make + ' level unchanged');
+              console.log(make + ' level unchanged (or compromised)');
             }
 
-            if (setPressure - pressure > 3) {
-              message += 'pressure, ';
+            if (setPressure - pressure > 10 && !pressureCompromised) {
+              const message =
+                'pressure decreased by ' + (setPressure - pressure) + 'bar';
               console.log(
                 make +
                   ' pressure decreased by ' +
                   (setPressure - pressure) +
                   'bar'
               );
+              console.log('adding notification....');
+              axios
+                .post('/truck/addAlert', { driver, _id, message })
+                .then((res) => console.log(res.data));
             } else {
               console.log(make + ' pressure unchanged');
             }
 
-            if (setWeight - weight > 3) {
-              message += 'weight, ';
+            if (setWeight - weight > 8 && !weightCompromised) {
+              const message =
+                'weight decreased by ' + (setWeight - weight) + 'kg';
               console.log(
                 make + ' weight decreased by ' + (setWeight - weight) + 'kg'
               );
+              console.log('adding notification....');
+              axios
+                .post('/truck/addAlert', { driver, _id, message })
+                .then((res) => console.log(res.data));
             } else {
               console.log(make + ' weight unchanged');
             }
 
-            if (message.length > 3) message += 'reduced. ';
-
-            if (valve) {
-              message += 'Valve opened!';
+            if (valve && !valveCompromised) {
+              const message = 'Valve opened!';
+              console.log('adding notification....');
+              axios
+                .post('/truck/addAlert', { driver, _id, message })
+                .then((res) => console.log(res.data));
             } else {
+              console.log(make + ' valve CLOSED');
             }
           } else {
-            console.log(make + ' has no incomplete jobs, or is compromised');
-          }
-
-          if (message.length > 3) {
-            console.log('message: ' + message);
-            console.log('adding notification....');
-            axios
-              .post('/truck/addAlert', { driver, _id, message })
-              .then((res) => console.log(res.data));
+            console.log(make + ' has no incomplete jobs');
           }
         });
       });

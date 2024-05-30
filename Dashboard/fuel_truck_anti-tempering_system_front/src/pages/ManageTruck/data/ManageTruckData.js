@@ -158,6 +158,7 @@ export default function OutlinedCard() {
                 colors={['#c30010', '#F5CD19', '#00FF00']}
                 percent={level / 100}
                 textColor='#9ABDDC'
+                animate={false}
               />
             </CardContent>
             <CardActions>
@@ -197,7 +198,7 @@ export default function OutlinedCard() {
                 component='div'
                 sx={{ fontSize: 100, display: 'block' }}
               >
-                {weight}
+                {weight ? weight.toFixed(2) : weight}
                 <span style={{ fontSize: 50, color: '#4169e1' }}>kg</span>
               </Typography>
             </CardContent>
